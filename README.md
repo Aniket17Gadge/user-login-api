@@ -17,7 +17,7 @@ OTP is generated, salted, hashed, and stored with a timestamp.
 
 Sent to the user via mock email (printed to console).
 
-##User submits OTP to /verify-otp/
+## User submits OTP to /verify-otp/
 
 Verifies OTP hash and checks expiration (30 sec).
 
