@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import RegisteredEmail, OTP
 import secrets
 import hashlib
+from django.utils import timezone
+from datetime import timedelta
 
 class RegisteredEmailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,3 +48,28 @@ class OTPRequestSerializer(serializers.Serializer):
         print(f"[MOCK EMAIL] OTP for {email}: {otp}")
 
         return {"message": "OTP sent to your email (printed in console)."}
+
+class OTPVerifySerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField(max_length=6)
+
+    def validate(self, data):
+        email = data['email']
+        otp = data['otp']
+
+        # Fetch latest OTP record
+        try:
+            record = OTP.objects.filter(email=email).latest('created_at')
+        except OTP.DoesNotExist:
+            raise serializers.ValidationError("No OTP request found for this email.")
+
+        # Check if OTP is expired (e.g., 10 min)
+        if timezone.now() - record.created_at > timedelta(seconds=20):
+            raise serializers.ValidationError("OTP expired.")
+
+        # Hash the input OTP with the saved salt and compare
+        otp_hash = hashlib.sha256(f"{otp}{record.salt}".encode()).hexdigest()
+        if otp_hash != record.hashed_otp:
+            raise serializers.ValidationError("Invalid OTP.")
+
+        return data

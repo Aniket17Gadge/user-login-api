@@ -4,7 +4,10 @@ from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
 from .models import RegisteredEmail, OTP
-from .serializers import RegisteredEmailSerializer, OTPRequestSerializer
+from .serializers import RegisteredEmailSerializer, OTPRequestSerializer,OTPVerifySerializer
+from .utils import generate_jwt
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
 
 class RegisterEmailView(APIView):
     def post(self, request):
@@ -30,5 +33,26 @@ class OTPRequestView(APIView):
 
             result = serializer.save()
             return Response(result, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# auth_app/views.py
+
+class OTPVerifyView(APIView):
+    def post(self, request):
+        serializer = OTPVerifySerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+
+            # Get or create user (we assume users login only with email)
+            user, _ = User.objects.get_or_create(email=email, defaults={"email": email})
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "message": "OTP verified successfully.",
+                "access": str(refresh.access_token),
+                "refresh": str(refresh)
+            }, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
