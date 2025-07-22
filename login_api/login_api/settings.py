@@ -84,17 +84,17 @@ DATABASES = {
 }
 
 
-#for Docker setup update the configuration for postgres database which running on docker
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'otp_auth_db'),
-        'USER': os.getenv('DB_USER', 'otp_admin'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'otp_secure_pass'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
-}
+# #for Docker setup update the configuration for postgres database which running on docker
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME', 'otp_auth_db'),
+#         'USER': os.getenv('DB_USER', 'otp_admin'),
+#         'PASSWORD': os.getenv('DB_PASSWORD', 'otp_secure_pass'),
+#         'HOST': os.getenv('DB_HOST', 'localhost'),
+#         'PORT': os.getenv('DB_PORT', '5432'),
+#     }
+# }
 
 
 # Password validation
