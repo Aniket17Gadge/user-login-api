@@ -3,10 +3,10 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, RegisteredEmail, OTP
 from django.utils.translation import gettext_lazy as _
 from django import forms
-
-
 from django.contrib import admin
 from .models import RegisteredEmail, OTP
+
+#Registers models in Django admin to monitor it in admin site 
 
 #Useful for tracking which emails are registered in the system.
 @admin.register(RegisteredEmail)

@@ -9,6 +9,8 @@ from .utils import generate_jwt
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 
+#Controls request/response logic how the post request handle and what get injson response all mechanism handle here
+
 class RegisterEmailView(APIView):
     def post(self, request):
         serializer = RegisteredEmailSerializer(data=request.data)
@@ -36,8 +38,6 @@ class OTPRequestView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# auth_app/views.py
-
 class OTPVerifyView(APIView):
     def post(self, request):
         serializer = OTPVerifySerializer(data=request.data)

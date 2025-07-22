@@ -3,6 +3,9 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 
+#Defines  database schema.
+
+#structures how to store OTP and email data securely and helps manage validations and rate-limiting while filetring the data.
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -44,7 +47,7 @@ class RegisteredEmail(models.Model):
         return self.email
 
 def get_default_expiry():
-    """Function to provide default expiry time"""
+    """Function to provide default expirytime"""
     return timezone.now() + timedelta(minutes=10)
 
 class OTP(models.Model):
@@ -52,7 +55,6 @@ class OTP(models.Model):
     hashed_otp = models.CharField(max_length=64)
     salt = models.CharField(max_length=16)
     created_at = models.DateTimeField(auto_now_add=True)
-    # 🔸 FIXED: Use callable for default to avoid migration issues
     expires_at = models.DateTimeField(default=get_default_expiry)
     is_used = models.BooleanField(default=False)
     attempts = models.IntegerField(default=0)

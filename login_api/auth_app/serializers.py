@@ -5,6 +5,8 @@ import hashlib
 from django.utils import timezone
 from datetime import timedelta
 
+#Handles data validation and transformation.
+
 class RegisteredEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = RegisteredEmail
@@ -64,7 +66,7 @@ class OTPVerifySerializer(serializers.Serializer):
             raise serializers.ValidationError("No OTP request found for this email.")
 
         # Check if OTP is expired (e.g., 10 min)
-        if timezone.now() - record.created_at > timedelta(seconds=20):
+        if timezone.now() - record.created_at > timedelta(seconds=30):
             raise serializers.ValidationError("OTP expired.")
 
         # Hash the input OTP with the saved salt and compare
